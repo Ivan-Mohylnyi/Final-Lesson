@@ -1,7 +1,7 @@
 {
   "name": "final-lesson",
   "version": "1.0.0",
-  "description": "QA Automation TypeScript course final project: Playwright test framework for rozetka.com.ua",
+  "description": "QA Automation TypeScript course final project: Playwright test framework for automationexercise.com",
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test",

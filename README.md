@@ -12,11 +12,6 @@ Playwright + TypeScript test framework covering [automationexercise.com](https:/
 
 ## Why this site
 
-Two other targets were evaluated and rejected before this one:
-
-- **rozetka.com.ua** - has a real internal API, but is protected by Cloudflare bot-detection that blocks **headless** browsers (the mode CI runners use). Headed mode works locally but is not reliable enough for CI.
-- A private work project - has a real, well-documented API, but was intentionally not used here to avoid mixing an employer's internal system with a public course submission.
-
 `automationexercise.com` is purpose-built for automation practice: no bot protection, a documented public JSON API (`/api_list`), and a full product/cart UI flow.
 
 ## Project Structure
@@ -38,6 +33,7 @@ src/
   fixtures/
     services.fixture.ts -> apis.fixture.ts -> pages.fixture.ts -> index.ts
 tests/
+  unit/assert-shape.spec.ts        # Unit tests for the runtime response-shape guard
   api/products.spec.ts             # Products API tests (status codes, shape, negative paths)
   api/account.spec.ts              # Account API tests (full CRUD lifecycle, negative paths)
   e2e/search-and-add-to-cart.spec.ts
@@ -82,9 +78,13 @@ The **consumer side** of Pact is implemented: `tests/contract/products.pact.spec
 
 `.github/workflows/ci.yml` runs on every push/PR to `main`: installs dependencies, installs the Chromium browser, lints/type-checks, runs the full test suite, and uploads the Playwright HTML report and generated Pact contract files as build artifacts.
 
+## Defensive API Client Code
+
+Every `*Api` method parses the response body as `unknown` and runs it through `assertShape()` (`src/services/assert-shape.ts`) before returning it, instead of blindly `as`-casting the parsed JSON to a DTO. If `automationexercise.com` ever returns something that doesn't match the agreed shape (a different error format, a broken/HTML response, a renamed field), the client throws a clear, immediate error naming the endpoint and the missing field(s) - instead of letting `undefined` silently propagate into a test or, in a real app, into production code. `tests/unit/assert-shape.spec.ts` unit-tests the guard itself (missing keys, non-object body, `null` body) so this behavior is verified, not just assumed.
+
 ## Notes
 
 - Search, catalog-filter and product-detail E2E flows require no authentication (the site's cart/browse flow is anonymous).
 - The registration E2E test creates a real account through the UI (unique, timestamped email) and deletes it via the Account API in a `finally` block, so it cleans up after itself even if an assertion fails mid-test.
-- The Account API test suite covers the full create -> read -> verify-login -> delete lifecycle (also cleaned up in a `finally` block), plus negative paths (missing parameters, non-existent user) - this is exactly what `automationexercise.com`'s account endpoints are designed for, so exercising write operations here (unlike against `rozetka.com.ua` or a real production/work system) is safe and intentional.
+- The Account API test suite covers the full create -> read -> verify-login -> delete lifecycle (also cleaned up in a `finally` block), plus negative paths (missing parameters, non-existent user) - this is exactly what `automationexercise.com`'s account endpoints are designed for, so exercising write operations here is safe and intentional.
 - Product API tests also cover a negative path (missing `search_product` parameter).
