@@ -1,6 +1,6 @@
-# Final Lesson — QA Automation TypeScript Course Project
+# Final Lesson - QA Automation TypeScript Course Project
 
-Playwright + TypeScript test framework covering [automationexercise.com](https://automationexercise.com) — a public product/e-commerce site built specifically for test automation practice.
+Playwright + TypeScript test framework covering [automationexercise.com](https://automationexercise.com) - a public product/e-commerce site built specifically for test automation practice.
 
 ## Tech Stack
 
@@ -14,8 +14,8 @@ Playwright + TypeScript test framework covering [automationexercise.com](https:/
 
 Two other targets were evaluated and rejected before this one:
 
-- **rozetka.com.ua** — has a real internal API, but is protected by Cloudflare bot-detection that blocks **headless** browsers (the mode CI runners use). Headed mode works locally but is not reliable enough for CI.
-- A private work project — has a real, well-documented API, but was intentionally not used here to avoid mixing an employer's internal system with a public course submission.
+- **rozetka.com.ua** - has a real internal API, but is protected by Cloudflare bot-detection that blocks **headless** browsers (the mode CI runners use). Headed mode works locally but is not reliable enough for CI.
+- A private work project - has a real, well-documented API, but was intentionally not used here to avoid mixing an employer's internal system with a public course submission.
 
 `automationexercise.com` is purpose-built for automation practice: no bot protection, a documented public JSON API (`/api_list`), and a full product/cart UI flow.
 
@@ -69,9 +69,9 @@ npm run test:report:open     # open and launch in the browser directly
 
 ## Contract Testing (Pact)
 
-Only the **consumer side** of Pact is implemented: `tests/contract/products.pact.spec.ts` spins up a Pact mock provider, defines the expected request/response contract for `GET /productsList`, and runs the real `ProductsApi` client against it. Running this generates a pact file under `pacts/`.
+The **consumer side** of Pact is implemented: `tests/contract/products.pact.spec.ts` spins up a Pact mock provider, defines the expected request/response contract for `GET /productsList`, and runs the real `ProductsApi` client against it. Running this generates a pact file under `pacts/`.
 
-**Provider-side verification is intentionally not implemented.** `automationexercise.com` is a third-party public service we don't control; repeatedly running `Verifier().verifyProvider()` against a live, uncontrolled external API in CI would be fragile and is not good practice. The consumer test still demonstrates the intended interaction contract and is a real, useful regression check on our own client code.
+**Provider-side verification (`Verifier().verifyProvider()`) was attempted but is not included, for a concrete technical reason, not skipped by default.** `automationexercise.com`'s JSON API endpoints are served with `Content-Type: text/html` instead of `application/json` (a real, reproducible bug in that site, verified with `curl -I`). Pact's verifier hard-requires the actual provider response to be recognized as JSON before it will compare the body at all - unrelated to anything declared in the contract - so verification fails purely on that header, regardless of how the interaction is written. Declaring the real header on the consumer/mock side to match reality also breaks Pact's own matcher resolution in the mock response (a separate, reproducible issue in this Pact-JS version). Since this is a defect in the third-party site colliding with a hard limitation of the verifier, not something fixable from the consumer side, provider verification was left out rather than shipped in a way that could flake or misreport a working provider as broken. The consumer test still fully demonstrates and enforces the intended interaction contract.
 
 ## CI
 
@@ -80,4 +80,4 @@ Only the **consumer side** of Pact is implemented: `tests/contract/products.pact
 ## Notes
 
 - Search and catalog-filter E2E flows require no authentication (the site's cart/browse flow is anonymous).
-- API tests only exercise safe, idempotent endpoints (`GET`/`POST` search) — no destructive operations against the public API.
+- API tests only exercise safe, idempotent endpoints (`GET`/`POST` search) - no destructive operations against the public API.

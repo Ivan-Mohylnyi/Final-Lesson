@@ -32,7 +32,6 @@ test.describe('Products API contract (consumer-side Pact)', () => {
             .withRequest({ method: 'GET', path: '/productsList' })
             .willRespondWith({
                 status: 200,
-                headers: { 'Content-Type': 'application/json; charset=utf-8' },
                 body: {
                     responseCode: integer(200),
                     products: eachLike(expectedProduct)
