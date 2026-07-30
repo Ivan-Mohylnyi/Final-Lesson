@@ -10,11 +10,11 @@ export class ProductsPage {
     }
 
     public get productCards(): Locator {
-        return this.page.locator('.single-products');
+        return this.page.locator('.product-image-wrapper');
     }
 
     public get productNames(): Locator {
-        return this.page.locator('.single-products .productinfo p');
+        return this.page.locator('.product-image-wrapper .productinfo p');
     }
 
     public get cartModalContinueButton(): Locator {
@@ -48,5 +48,11 @@ export class ProductsPage {
         const card = this.productCards.nth(index);
         await card.hover();
         await card.locator('a.add-to-cart').first().click();
+    }
+
+    public async openProductDetailsByIndex(index: number): Promise<void> {
+        const card = this.productCards.nth(index);
+        const href = await card.locator('a[href^="/product_details/"]').first().getAttribute('href');
+        await this.page.goto(href as string, { waitUntil: 'domcontentloaded' });
     }
 }

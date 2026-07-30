@@ -5,6 +5,10 @@ export class HomePage {
         return this.page.locator('a[href="/products"]');
     }
 
+    public get loggedInAsIndicator(): Locator {
+        return this.page.getByText('Logged in as', { exact: false });
+    }
+
     public constructor(private page: Page) {}
 
     public async goTo(): Promise<void> {

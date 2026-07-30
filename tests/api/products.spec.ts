@@ -29,4 +29,12 @@ test.describe('Products API', () => {
             expect(matchesName || matchesCategory).to.be.true;
         }
     });
+
+    test('should return a 400 bad request when search_product parameter is missing', async ({ productsApi }) => {
+        const [response, body] = await productsApi.searchProductWithoutParamAsync();
+
+        expect(response.status()).to.equal(200);
+        expect(body.responseCode).to.equal(400);
+        expect(body.message).to.include('search_product parameter is missing');
+    });
 });
