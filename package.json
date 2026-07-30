@@ -1,0 +1,32 @@
+{
+  "name": "final-lesson",
+  "version": "1.0.0",
+  "description": "QA Automation TypeScript course final project: Playwright test framework for rozetka.com.ua",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:debug": "npx playwright test --debug",
+    "test:report": "npx playwright show-report",
+    "test:report:open": "npx playwright show-report --open",
+    "lint": "tsc --build && eslint ./src ./tests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.61.1",
+    "@pact-foundation/pact": "^15.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/chai": "^5.2.3",
+    "@types/node": "^26.1.0",
+    "chai": "^6.2.2",
+    "eslint": "^10.6.0",
+    "eslint-plugin-unicorn": "^69.0.0",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.62.0"
+  }
+}

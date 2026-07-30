@@ -1,0 +1,25 @@
+{
+  "exclude": ["./dist/**/*", "./node_modules/**/*"],
+  "include": ["./src/**/*", "./tests/**/*"],
+  "compileOnSave": false,
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "lib": ["DOM", "ES2020", "esnext"],
+    "module": "ESNext",
+    "noFallthroughCasesInSwitch": true,
+    "rootDir": "./",
+    "outDir": "./dist/out-tsc",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "target": "ESNext",
+    "typeRoots": ["node_modules/@types"],
+    "types": ["node", "chai"],
+    "noImplicitAny": false,
+    "noImplicitOverride": true,
+    "strict": true
+  }
+}
